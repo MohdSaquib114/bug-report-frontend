@@ -19,10 +19,31 @@ export default function UsagePage() {
         Embed the widget, decide where reports go, and read what your submit handler receives.
       </DocLead>
 
+      <DocH2>The flow at a glance</DocH2>
+      <DocP>
+        Start from a project, end with a floating widget that files reports into it.
+      </DocP>
+      <DocList
+        items={[
+          <>Create a project in the workspace.</>,
+          <>Copy its project URL from the <DocCode>Connect</DocCode> tab.</>,
+          <>Install <DocCode>bug-widget-library</DocCode> in your app.</>,
+          <>
+            Create a submit handler that POSTs the payload to that URL — JSON, or{" "}
+            <DocCode>multipart/form-data</DocCode> when screenshots are attached.
+          </>,
+          <>
+            Render <DocCode>&lt;Widget projectUrl={`{url}`} onSubmit={`{handleSubmit}`} /&gt;</DocCode>.
+          </>,
+        ]}
+      />
+
       <DocH2>Basic embed</DocH2>
       <DocP>
-        The widget posts to a single project URL. In the BugDrop workspace, that&apos;s{" "}
-        <DocCode>/projects/&lt;slug&gt;/bugs</DocCode> — but your submit handler can send it anywhere.
+        The widget posts to a single project URL. In the BugDrop workspace that&apos;s{" "}
+        <DocCode>https://api.bugdrop.dev/projects/&lt;slug&gt;/bugs</DocCode>, where the slug is generated
+        for your project — copy the exact value from the <DocCode>Connect</DocCode> tab. Your submit handler
+        can, of course, send the payload anywhere instead.
       </DocP>
       <CodeBlock
         className="mt-4"
@@ -31,28 +52,73 @@ export default function UsagePage() {
 import type { BugReportData } from "bug-widget-library";
 import "bug-widget-library/style.css";
 
+const projectUrl = "https://api.bugdrop.dev/projects/my-app/bugs";
+
+// Screenshots arrive as PNG data URLs — downscale and re-encode them so we
+// upload small image files instead of base64 inside a JSON body.
+async function toFile(dataUrl: string, name: string) {
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+  const scale = Math.min(1, 1600 / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(image.width * scale);
+  canvas.height = Math.round(image.height * scale);
+  canvas.getContext("2d")!.drawImage(image, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.82));
+  return new File([blob!], name, { type: "image/jpeg" });
+}
+
 export function App() {
   const handleSubmit = async (data: BugReportData) => {
-    const response = await fetch("https://api.bugdrop.dev/projects/my-app/bugs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    let response: Response;
+
+    if (data.screenshots.length > 0) {
+      // Screenshots present: multipart/form-data with compressed image files.
+      const form = new FormData();
+      form.append("title", data.title);
+      form.append("description", data.description);
+      form.append("timestamp", data.timestamp);
+      form.append("meta", JSON.stringify(data.meta));
+      for (let i = 0; i < data.screenshots.length; i++) {
+        const shot = data.screenshots[i];
+        form.append("screenshots", await toFile(shot.dataUrl, "screenshot-" + (i + 1) + ".jpg"));
+      }
+      response = await fetch(projectUrl, { method: "POST", body: form });
+    } else {
+      // No screenshots: a plain JSON body is enough.
+      response = await fetch(projectUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    }
+
     if (!response.ok) throw new Error("Failed to submit bug report");
   };
 
   return (
     <Widget
-      projectUrl="https://api.bugdrop.dev/projects/my-app/bugs"
+      projectUrl={projectUrl}
       onSubmit={handleSubmit}
     />
   );
 }`}
       />
+      <DocCallout tone="info" title="One URL, two content types">
+        <p>
+          The project URL accepts both. Send <DocCode>multipart/form-data</DocCode> when there are
+          screenshots so the images upload as files; send <DocCode>application/json</DocCode> for
+          text-only reports. The backend stores the files for you.
+        </p>
+      </DocCallout>
       <DocCallout title="What the user experiences" tone="tip">
         <p>
           A floating button that opens a form. They add a title and description, optionally capture up to 3
-          screenshots and annotate them (arrows, boxes, freehand), then hit submit. On success they see a
+          screenshots and annotate them (arrows, boxes, freehand) with move/resize, eraser and undo/redo, then hit submit. On success they see a
           confirmation and the report is on its way to your endpoint.
         </p>
       </DocCallout>
@@ -67,7 +133,7 @@ export function App() {
   onSubmit={handleSubmit}
   uiSettings={{
     position: "bottom-right",        // or bottom/top-left, left, right
-    primaryColor: "#7C5CFF",
+    primaryColor: "#3B7DFF",
     buttonText: "Report a bug",
     title: "Found something broken?",
     subtitle: "Add context + a screenshot. Two minutes, max.",

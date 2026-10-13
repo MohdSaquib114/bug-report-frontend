@@ -6,14 +6,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  Bug as BugIcon,
   Plus,
+  Plug,
   Search,
   Settings2,
   SlidersHorizontal,
   Users,
-  ClipboardCopy,
-  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +23,7 @@ import { Board, type BoardFilters } from "@/components/bugs/board";
 import { BugComposeDialog } from "@/components/bugs/bug-compose-dialog";
 import { MembersPanel } from "@/components/projects/members-panel";
 import { SettingsPanel } from "@/components/projects/settings-panel";
-import { Dialog } from "@/components/ui/dialog";
+import { ConnectPanel } from "@/components/projects/connect-panel";
 import { useToast } from "@/lib/toast";
 import {
   getProject,
@@ -50,8 +48,6 @@ export default function ProjectPage() {
   const [tab, setTab] = useState("board");
   const [loading, setLoading] = useState(true);
   const [composeOpen, setComposeOpen] = useState(false);
-  const [widgetOpen, setWidgetOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [filters, setFilters] = useState<BoardFilters>({ priority: "all" });
 
   const load = useCallback(async () => {
@@ -90,20 +86,6 @@ export default function ProjectPage() {
 
   const canManage = roleRank(myRole) >= rankOf("maintainer");
   const canCreate = roleRank(myRole) >= rankOf("contributor");
-
-  const widgetUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/demo?project=${project?.slug ?? ""}`
-    : "";
-
-  const copyWidget = async () => {
-    try {
-      await navigator.clipboard.writeText(widgetUrl);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
-    } catch {
-      /* ignore */
-    }
-  };
 
   if (loading) {
     return (
@@ -147,9 +129,9 @@ export default function ProjectPage() {
               Report a bug
             </Button>
           )}
-          <Button variant="secondary" onClick={() => setWidgetOpen(true)}>
-            <BugIcon className="size-4" />
-            Widget
+          <Button variant="secondary" onClick={() => setTab("connect")}>
+            <Plug className="size-4" />
+            Connect
           </Button>
         </div>
       </div>
@@ -160,6 +142,7 @@ export default function ProjectPage() {
         onActiveChange={setTab}
         tabs={[
           { key: "board", label: "Board", count: bugs.length, icon: <SlidersHorizontal /> },
+          { key: "connect", label: "Connect", icon: <Plug /> },
           { key: "members", label: "Members", count: members.length, icon: <Users /> },
           { key: "settings", label: "Settings", icon: <Settings2 /> },
         ]}
@@ -194,40 +177,14 @@ export default function ProjectPage() {
           </div>
         )}
 
+        {tab === "connect" && <ConnectPanel project={project} />}
+
         {tab === "members" && <MembersPanel slug={slug} canManage={canManage} />}
 
         {tab === "settings" && <SettingsPanel project={project} canManage={canManage} />}
       </div>
 
       <BugComposeDialog open={composeOpen} onOpenChange={setComposeOpen} slug={slug} onCreated={refreshBugs} />
-
-      <Dialog
-        open={widgetOpen}
-        onOpenChange={setWidgetOpen}
-        title="Shareable demo link"
-        description="Open this page to try the widget against this project, or copy the snippet."
-      >
-        <div className="space-y-4">
-          <div>
-            <p className="text-[13px] font-medium text-text-1">Live demo page</p>
-            <div className="mt-1.5 flex items-center gap-2">
-              <code className="flex-1 truncate rounded-md border border-line-2 bg-bg-1 px-3 py-2 font-mono text-xs text-text-1">
-                {widgetUrl}
-              </code>
-              <Button variant="secondary" size="sm" onClick={copyWidget}>
-                {copied ? <Check className="size-3.5 text-accent" /> : <ClipboardCopy className="size-3.5" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-            </div>
-          </div>
-          <div>
-            <p className="text-[13px] font-medium text-text-1">Direct report endpoint</p>
-            <code className="mt-1.5 block rounded-md border border-line-2 bg-bg-1 px-3 py-2 font-mono text-xs text-text-1">
-              POST /projects/{project.slug}/bugs
-            </code>
-          </div>
-        </div>
-      </Dialog>
     </div>
   );
 }

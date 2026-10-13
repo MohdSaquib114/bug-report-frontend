@@ -17,7 +17,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (status === "loading" || status === "anonymous") {
     return (
       <div className="flex h-dvh flex-col items-center justify-center gap-3 bg-bg-0">
-        <span className="size-8 animate-pulse rounded-lg bg-brand-gradient shadow-glow-brand" />
+        <span className="size-8 animate-pulse rounded-lg bg-bg-3" />
         <Spinner className="text-text-3" />
       </div>
     );

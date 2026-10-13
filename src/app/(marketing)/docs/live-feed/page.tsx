@@ -64,10 +64,10 @@ export default function BackendApiPage() {
 
       <DocH2>Projects</DocH2>
       <ul className="mt-3 space-y-2">
-        <Endpoint method="POST" path="/projects" description="Create a project. The creator becomes the owner." />
+        <Endpoint method="POST" path="/projects" description="Create a project. The creator becomes the owner. The slug is auto-generated from the name." />
         <Endpoint method="GET" path="/projects" description="List projects visible to the user. ?include_archived=true to include archives." />
         <Endpoint method="GET" path="/projects/{slug}" description="Fetch one project by slug." />
-        <Endpoint method="PATCH" path="/projects/{slug}" description="Rename, re-slug, edit description, archive/unarchive." />
+        <Endpoint method="PATCH" path="/projects/{slug}" description="Rename, edit description, archive/unarchive. The slug itself is immutable." />
         <Endpoint method="DELETE" path="/projects/{slug}" description="Soft delete — archives the project, data retained." />
         <Endpoint method="GET" path="/projects/{slug}/members" description="List project members with their roles." />
         <Endpoint method="POST" path="/projects/{slug}/members" description="Invite a member by email with a role." />
@@ -77,7 +77,7 @@ export default function BackendApiPage() {
 
       <DocH2>Bugs & reports</DocH2>
       <ul className="mt-3 space-y-2">
-        <Endpoint method="POST" path="/projects/{slug}/bugs" description="Submit a BugReportData payload (the widget&apos;s endpoint). Auth optional." auth={false} />
+        <Endpoint method="POST" path="/projects/{slug}/bugs" description="The widget&apos;s endpoint. Accepts a JSON BugReportData body, or multipart/form-data with screenshot image files. Auth optional." auth={false} />
         <Endpoint method="GET" path="/projects/{slug}/bugs" description="List bugs with ?status, ?priority, ?assignee_id, ?reporter_id filters." />
         <Endpoint method="GET" path="/bugs/{bug_id}" description="Bug detail, including attachments." />
         <Endpoint method="PATCH" path="/bugs/{bug_id}" description="Update status, priority, assignee, title or description." />

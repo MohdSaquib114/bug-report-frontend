@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string }> }> = [
   {
@@ -41,10 +40,9 @@ export function MarketingFooter() {
             An embeddable bug reporting widget with annotated screenshot capture,
             wired to a workspace your team will actually enjoy.
           </p>
-          <div className="flex items-center gap-2 pt-1">
-            <ThemeToggle />
-            <span className="text-xs text-text-3">dark-first, always</span>
-          </div>
+          <p className="pt-1 text-xs text-text-3">
+            Annotated screenshots, triaged in one calm workspace.
+          </p>
         </div>
         {COLUMNS.map((column) => (
           <div key={column.title}>

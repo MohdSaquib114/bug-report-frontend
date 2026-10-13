@@ -123,6 +123,13 @@ interface BugReportData {
   meta: BugReportMetadata;
 }`}
       />
+      <DocCallout tone="info" title="Uploading screenshots">
+        <p>
+          Each screenshot is a PNG <DocCode>dataUrl</DocCode>. For uploads, compress it to an image file and
+          send <DocCode>multipart/form-data</DocCode> rather than embedding the base64 string in JSON — see the{" "}
+          <a href="/docs/usage" className="font-medium text-brand-300 underline underline-offset-2 hover:text-brand-400">usage guide</a>.
+        </p>
+      </DocCallout>
       <DocCallout title="Play with the real package" tone="tip">
         <p>
           Head to the <a href="/demo" className="font-medium text-brand-300 underline underline-offset-2 hover:text-brand-400">live demo</a> to

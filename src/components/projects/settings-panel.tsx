@@ -12,15 +12,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog } from "@/components/ui/dialog";
 import { updateProject, archiveProject } from "@/lib/api";
 import { useToast } from "@/lib/toast";
-import { getErrorMessage, slugify } from "@/lib/utils";
+import { getErrorMessage } from "@/lib/utils";
 import type { Project } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
-  slug: z.string().refine((v) => !v || /^[a-z0-9-]+$/.test(v), {
-    message: "Letters, numbers and hyphens only",
-  }),
   description: z.string().max(1000).optional(),
 });
 
@@ -39,7 +36,6 @@ export function SettingsPanel({ project, canManage }: { project: Project; canMan
     resolver: zodResolver(schema),
     defaultValues: {
       name: project.name,
-      slug: project.slug,
       description: project.description ?? "",
     },
   });
@@ -47,15 +43,11 @@ export function SettingsPanel({ project, canManage }: { project: Project; canMan
   const onSave = async (values: z.infer<typeof schema>) => {
     setSaving(true);
     try {
-      const updated = await updateProject(project.slug, {
+      await updateProject(project.slug, {
         name: values.name,
         description: values.description?.trim() || null,
-        slug: values.slug || slugify(values.name),
       });
       toast({ title: "Project updated", description: "Changes saved.", tone: "success" });
-      if (updated.slug !== project.slug) {
-        router.push(`/app/projects/${updated.slug}`);
-      }
       router.refresh();
     } catch (error) {
       toast({ title: "Couldn't save", description: getErrorMessage(error), tone: "error" });
@@ -96,18 +88,17 @@ export function SettingsPanel({ project, canManage }: { project: Project; canMan
           <Input id="settings-name" {...register("name")} />
         </Field>
         <Field
-          label="Slug"
+          label="Project URL"
           htmlFor="settings-slug"
-          error={errors.slug?.message}
-          hint="Changing the slug changes the widget's report URL."
+          hint="Generated from the project name at creation and kept stable so existing widget embeds keep working."
         >
-          <div className="flex items-center gap-1.5 rounded-md border border-line-2 bg-bg-2 px-3 transition-all focus-within:border-brand-500 focus-within:ring-brand">
-            <span className="font-mono text-[13px] text-text-2">apps/</span>
-            <input
-              id="settings-slug"
-              className="h-9 min-w-0 flex-1 bg-transparent font-mono text-[13px] text-text-0 outline-none"
-              {...register("slug")}
-            />
+          <div
+            id="settings-slug"
+            className="flex items-center gap-1.5 rounded-md border border-line-1 bg-bg-3 px-3 py-2"
+          >
+            <span className="truncate font-mono text-[13px] text-text-2">
+              /projects/{project.slug}/bugs
+            </span>
           </div>
         </Field>
         <Field label="Description" htmlFor="settings-desc">

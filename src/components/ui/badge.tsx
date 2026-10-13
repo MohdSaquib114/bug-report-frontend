@@ -3,7 +3,7 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export type BadgeTone = "neutral" | "brand" | "lime" | "danger" | "warning" | "info";
+export type BadgeTone = "neutral" | "brand" | "accent" | "danger" | "warning" | "info";
 
 export const BADGE_TONES: Record<
   BadgeTone,
@@ -11,7 +11,7 @@ export const BADGE_TONES: Record<
 > = {
   neutral: { classes: "border-line-1 bg-bg-2 text-text-1", dot: "bg-text-1" },
   brand: { classes: "border-brand-500/30 bg-brand-500/10 text-brand-300", dot: "bg-brand-400" },
-  lime: { classes: "border-accent/30 bg-accent/10 text-accent", dot: "bg-accent" },
+  accent: { classes: "border-accent/30 bg-accent/10 text-accent", dot: "bg-accent" },
   danger: { classes: "border-danger/30 bg-danger/10 text-danger", dot: "bg-danger" },
   warning: { classes: "border-warning/30 bg-warning/10 text-warning", dot: "bg-warning" },
   info: { classes: "border-info/30 bg-info/10 text-info", dot: "bg-info" },

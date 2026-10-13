@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CodeBlock } from "@/components/ui/code-block";
 import { DocCallout, DocCode, DocH2, DocLead, DocList, DocP } from "@/components/docs/doc";
 
@@ -11,6 +12,38 @@ export default function InstallationPage() {
         BugDrop ships as a single React component. Install it anywhere you already have React — one
         dependency, no build-time magic.
       </DocLead>
+
+      <DocH2>The flow</DocH2>
+      <DocP>You&apos;ll repeat these five steps once per project.</DocP>
+      <DocList
+        items={[
+          <>Create a project in the workspace — BugDrop generates its report URL for you.</>,
+          <>Copy the project URL from the project&apos;s <DocCode>Connect</DocCode> tab.</>,
+          <>Install <DocCode>bug-widget-library</DocCode> in your app.</>,
+          <>Write a submit handler that POSTs the report to that project URL.</>,
+          <>
+            Render{" "}
+            <DocCode>&lt;Widget projectUrl={`{url}`} onSubmit={`{handleSubmit}`} /&gt;</DocCode> in your app.
+          </>,
+        ]}
+      />
+
+      <DocH2>Get your project URL</DocH2>
+      <DocP>
+        Open <Link href="/app/projects" className="font-medium text-brand-300 underline underline-offset-2 hover:text-brand-400">Projects</Link>,
+        create one, then copy the URL from its <DocCode>Connect</DocCode> tab. It looks like this:
+      </DocP>
+      <CodeBlock
+        className="mt-4"
+        title="Project URL"
+        code={`https://api.bugdrop.dev/projects/my-app/bugs`}
+      />
+      <DocCallout tone="info" title="Auto-generated slug">
+        <p>
+          The <code className="font-mono">my-app</code> segment is derived from the project name on the
+          server and is immutable. The URL you embed never changes under your users&apos; feet.
+        </p>
+      </DocCallout>
 
       <DocH2>Requirements</DocH2>
       <DocList

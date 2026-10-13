@@ -27,13 +27,13 @@ const CARDS = [
     body: "Every prop, uiSetting and event callback, with defaults.",
     cta: "Open reference",
   },
-  {
-    href: "/docs/live-feed",
-    icon: Boxes,
-    title: "Backend API",
-    body: "Projects, members, bugs and comments — the endpoints under the hood.",
-    cta: "Explore",
-  },
+  // {
+  //   href: "/docs/live-feed",
+  //   icon: Boxes,
+  //   title: "Backend API",
+  //   body: "Projects, members, bugs and comments — the endpoints under the hood.",
+  //   cta: "Explore",
+  // },
 ];
 
 export default function DocsOverview() {
@@ -84,7 +84,7 @@ export default function DocsOverview() {
           {[
             { icon: GripVertical, text: "Drag-and-drop status updates" },
             { icon: Users, text: "Roles: owner, maintainer, contributor, viewer" },
-            { icon: Boxes, text: "Projects, slugs and archived projects" },
+            { icon: Boxes, text: "Projects with auto-generated report URLs" },
             { icon: Bug, text: "The BugReportData payload shape" },
           ].map((r) => (
             <li key={r.text} className="flex items-center gap-2.5 text-sm text-text-1">

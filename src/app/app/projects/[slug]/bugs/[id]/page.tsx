@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -43,8 +43,8 @@ import { formatDateTime, getErrorMessage, timeAgo } from "@/lib/utils";
 import { BUG_PRIORITIES, BUG_STATUSES } from "@/lib/constants";
 import type { BugDetail, BugPriority, BugStatus, Comment, ProjectMember } from "@/lib/types";
 
-export default function BugDetailPage({ params }: { params: { slug: string; id: string } }) {
-  const { slug, id } = params;
+export default function BugDetailPage({ params }: { params: Promise<{ slug: string; id: string }> }) {
+  const { slug, id } = use(params);
   const router = useRouter();
   const { user } = useAuth();
   const { toast } = useToast();

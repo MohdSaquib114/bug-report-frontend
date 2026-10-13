@@ -9,7 +9,7 @@ export function LogoMark({ className, size = "md" }: { className?: string; size?
   return (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center bg-brand-gradient text-white shadow-glow-brand",
+        "relative inline-flex shrink-0 items-center justify-center bg-brand-500 text-white",
         box,
         className,
       )}

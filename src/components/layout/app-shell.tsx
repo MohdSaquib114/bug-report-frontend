@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { useAuth } from "@/lib/auth";
 import { Avatar } from "@/components/ui/avatar";
 import {
@@ -35,7 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-dvh min-h-0 overflow-hidden bg-bg-0">
-      <aside className="flex w-60 shrink-0 flex-col border-r border-line-0 bg-bg-1">
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-line-0 bg-bg-1 md:flex">
         <div className="flex h-14 shrink-0 items-center border-b border-line-0 px-4">
           <Link href="/app" aria-label="BugDrop dashboard">
             <Logo iconSize="sm" />
@@ -102,15 +101,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center justify-end gap-3 border-b border-line-0 px-6">
-          <Link
-            href="/"
-            className="hidden text-[13px] font-medium text-text-2 transition-colors hover:text-text-0 sm:block"
-          >
-            Back to site
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-line-0 px-4 sm:px-6">
+          <Link href="/app" className="flex md:hidden" aria-label="BugDrop dashboard">
+            <Logo iconSize="sm" />
           </Link>
-          <ThemeToggle />
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/"
+              className="text-[14px] font-medium text-text-2 transition-colors hover:text-text-0"
+            >
+              Back to site
+            </Link>
+            <div className="md:hidden">
+              <UserMenu compact />
+            </div>
+          </div>
         </header>
+        <nav className="flex items-center gap-1 overflow-x-auto border-b border-line-0 px-3 py-2 md:hidden">
+          {[...NAV_ITEMS, { href: "/docs", label: "Docs", icon: Book }, { href: "/demo", label: "Demo", icon: Droplets }].map(
+            (item) => {
+              const isActive =
+                item.href === "/app"
+                  ? pathname === "/app"
+                  : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex h-8 shrink-0 items-center gap-2 rounded-md px-3 text-[14px] font-medium transition-colors",
+                    isActive ? "bg-bg-2 text-text-0" : "text-text-1 hover:bg-bg-2 hover:text-text-0",
+                  )}
+                >
+                  <item.icon className="size-4" />
+                  {item.label}
+                </Link>
+              );
+            },
+          )}
+        </nav>
         <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
@@ -142,25 +171,27 @@ function NavLink({
   );
 }
 
-function UserMenu() {
+function UserMenu({ compact = false }: { compact?: boolean }) {
   const { user, signOut } = useAuth();
   const router = useRouter();
   if (!user) return null;
 
   return (
     <Dropdown align="end">
-      <DropdownTrigger asChild className="w-full rounded-md hover:bg-bg-2">
-        <div className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5">
+      <DropdownTrigger asChild className="rounded-md hover:bg-bg-2">
+        <div className={cn("flex items-center gap-2.5 rounded-md px-2 py-1.5", !compact && "w-full")}>
           <Avatar name={user.full_name} email={user.email} />
-          <span className="min-w-0 flex-1 text-left">
-            <span className="block truncate text-[13px] font-medium leading-tight text-text-0">
-              {user.full_name || user.email}
+          {!compact && (
+            <span className="min-w-0 flex-1 text-left">
+              <span className="block truncate text-[14px] font-medium leading-tight text-text-0">
+                {user.full_name || user.email}
+              </span>
+              <span className="block truncate text-xs leading-tight text-text-2">
+                {user.role === "admin" ? "Admin · " : ""}
+                {user.email}
+              </span>
             </span>
-            <span className="block truncate text-xs leading-tight text-text-2">
-              {user.role === "admin" ? "Admin · " : ""}
-              {user.email}
-            </span>
-          </span>
+          )}
         </div>
       </DropdownTrigger>
       <DropdownMenu className="min-w-[230px]">

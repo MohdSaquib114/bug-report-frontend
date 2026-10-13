@@ -1,3 +1,4 @@
+import { buildReportFormData } from "./images";
 import { isClient } from "./utils";
 import type {
   Bug,
@@ -130,7 +131,7 @@ export function grantPermission(userId: number, permission: string) {
 /* Projects                                                            */
 /* ------------------------------------------------------------------ */
 
-export function createProject(data: { name: string; description?: string | null; slug?: string }) {
+export function createProject(data: { name: string; description?: string | null }) {
   return apiFetch<Project>("/projects", { method: "POST", body: data });
 }
 
@@ -146,7 +147,7 @@ export function getProject(slug: string) {
 
 export function updateProject(
   slug: string,
-  data: { name?: string; description?: string | null; slug?: string; is_archived?: boolean },
+  data: { name?: string; description?: string | null; is_archived?: boolean },
 ) {
   return apiFetch<Project>(`/projects/${slug}`, { method: "PATCH", body: data });
 }
@@ -229,6 +230,43 @@ export function deleteBug(bugId: number) {
  */
 export function reportBug(slug: string, data: BugReportData) {
   return apiFetch<Bug>(`/projects/${slug}/bugs`, { method: "POST", body: data, auth: true });
+}
+
+/**
+ * Upload a widget report as multipart/form-data. Screenshots are compressed
+ * client-side and sent as image files instead of base64 inside JSON.
+ */
+export async function reportBugUpload(slug: string, data: BugReportData) {
+  const form = await buildReportFormData(data);
+
+  const headers: Record<string, string> = { Accept: "application/json" };
+  const token = getStoredToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const response = await fetch(`${API_URL}/projects/${slug}/bugs`, {
+    method: "POST",
+    headers,
+    body: form,
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    let message = `Request failed with status ${response.status}`;
+    try {
+      const body = await response.json();
+      if (typeof body?.detail === "string") message = body.detail;
+    } catch {
+      /* keep default message */
+    }
+    throw new ApiError(message, response.status);
+  }
+
+  return (await response.json()) as Bug;
+}
+
+/** Text-only reports go as JSON; reports with screenshots upload as files. */
+export function submitReport(slug: string, data: BugReportData) {
+  return data.screenshots.length > 0 ? reportBugUpload(slug, data) : reportBug(slug, data);
 }
 
 export function listComments(bugId: number) {

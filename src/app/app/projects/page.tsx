@@ -53,7 +53,7 @@ export default function ProjectsPage() {
     void load();
   }, [load]);
 
-  const handleCreate = async (values: { name: string; slug?: string; description?: string | null }) => {
+  const handleCreate = async (values: { name: string; description?: string | null }) => {
     setCreating(true);
     try {
       await createProject(values);

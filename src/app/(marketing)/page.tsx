@@ -50,7 +50,7 @@ function Hero() {
   return (
     <section className="relative">
       <div className="pointer-events-none absolute inset-0 bg-grid" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] bg-[radial-gradient(60%_50%_at_50%_-10%,rgb(124_92_255/0.25),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] bg-[radial-gradient(60%_50%_at_50%_-10%,rgb(59_125_255/0.14),transparent_70%)]" />
       <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-24 sm:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -73,9 +73,7 @@ function Hero() {
           Bug reporting that finally
           <span className="relative whitespace-nowrap">
             {" "}
-            <span className="bg-brand-gradient bg-clip-text text-transparent">
-              ships quality
-            </span>
+            <span className="text-brand-400">ships quality</span>
           </span>
         </motion.h1>
 
@@ -133,7 +131,7 @@ function Hero() {
           transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className="relative mx-auto mt-16 max-w-4xl"
         >
-          <div className="pointer-events-none absolute -inset-x-8 -top-10 h-40 bg-[radial-gradient(50%_100%_at_50%_0%,rgb(124_92_255/0.18),transparent_70%)]" />
+          <div className="pointer-events-none absolute -inset-x-8 -top-10 h-40 bg-[radial-gradient(50%_100%_at_50%_0%,rgb(59_125_255/0.10),transparent_70%)]" />
           <div className="relative overflow-hidden rounded-xl border border-line-2 bg-bg-1 shadow-xl">
             <div className="flex items-center gap-1.5 border-b border-line-0 px-4 py-3">
               <span className="size-2.5 rounded-full bg-bg-3" />
@@ -234,7 +232,7 @@ function MockWidget({ className }: { className?: string }) {
         className,
       )}
     >
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-gradient text-white shadow-glow-brand">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500 text-white">
         <Bug className="size-5" />
       </div>
       <div className="h-2 w-20 rounded-full bg-bg-3" />
@@ -281,7 +279,7 @@ const FEATURES = [
   {
     icon: Camera,
     title: "Annotated screenshots",
-    body: "Users draw on live captures — arrows, boxes, freehand — before they hit send. No more 'can't reproduce' threads.",
+    body: "Users draw on live captures — arrows, boxes, freehand — then move, resize, and erase before they hit send. No more 'can't reproduce' threads.",
   },
   {
     icon: GripVertical,
@@ -372,7 +370,7 @@ const STEPS = [
 function HowItWorks() {
   return (
     <section className="relative border-t border-line-0">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_40%_at_50%_0%,rgb(124_92_255/0.08),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_40%_at_50%_0%,rgb(59_125_255/0.06),transparent_70%)]" />
       <div className="relative mx-auto max-w-6xl px-5 py-24 sm:py-28">
         <motion.div {...fadeUp} className="grid items-center gap-12 lg:grid-cols-2">
           <div>
@@ -431,7 +429,7 @@ export function App() {
       projectUrl="https://api.bugdrop.dev/projects/my-app/bugs"
       uiSettings={{
         position: "bottom-right",
-        primaryColor: "#7C5CFF",
+        primaryColor: "#3B7DFF",
         buttonText: "Report a bug",
       }}
     />
@@ -491,7 +489,7 @@ const STAT_CARDS = [
 function CTA() {
   return (
     <section className="relative border-t border-line-0">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_100%,rgb(124_92_255/0.16),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_100%,rgb(59_125_255/0.08),transparent_70%)]" />
       <div className="relative mx-auto max-w-6xl px-5 py-24 text-center sm:py-32">
         <motion.div {...fadeUp}>
           <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-[-0.025em] sm:text-5xl">
