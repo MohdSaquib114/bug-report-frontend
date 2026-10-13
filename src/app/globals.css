@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@custom-variant light (&:where(.light, .light *));
+
+@theme static {
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Brand */
+  --color-brand-300: #b7a8ff;
+  --color-brand-400: #9b82ff;
+  --color-brand-500: #7c5cff;
+  --color-brand-600: #6a45f5;
+
+  /* Accent (live / success) */
+  --color-accent: #b8f24a;
+  --color-accent-dim: #7ba320;
+
+  /* Semantic */
+  --color-danger: #f04438;
+  --color-danger-dark: #d92d20;
+  --color-warning: #f5a524;
+  --color-warning-dark: #dc6803;
+  --color-info: #4c8dff;
+  --color-info-dark: #2e7cf6;
+
+  /* Neutrals — dark (default) */
+  --color-bg-0: #08080b;
+  --color-bg-1: #0e0e14;
+  --color-bg-2: #15151d;
+  --color-bg-3: #1d1d27;
+  --color-bg-hover: #1a1a23;
+  --color-line-0: rgba(255, 255, 255, 0.05);
+  --color-line-1: #23232e;
+  --color-line-2: #2e2e3a;
+  --color-text-0: #f5f5f8;
+  --color-text-1: #b4b4c2;
+  --color-text-2: #757584;
+  --color-text-3: #4c4c5a;
+  --color-text-inverse: #0a0a0f;
+
+  /* Light neutrals */
+  --color-bg-0-light: #f7f7f9;
+  --color-bg-1-light: #ffffff;
+  --color-bg-2-light: #ffffff;
+  --color-bg-3-light: #f1f1f5;
+  --color-bg-hover-light: #eeeef2;
+  --color-line-1-light: #e4e4ea;
+  --color-line-2-light: #d4d4dd;
+  --color-text-0-light: #101014;
+  --color-text-1-light: #565660;
+  --color-text-2-light: #8b8b98;
+  --color-text-3-light: #bcbcc6;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md:
+    0 2px 8px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lg:
+    0 8px 24px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+  --shadow-xl:
+    0 24px 64px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --shadow-glow-brand: 0 0 0 1px var(--color-brand-500),
+    0 8px 32px rgb(124 92 255 / 0.35);
+  --shadow-glow-accent: 0 0 24px rgb(184 242 74 / 0.25);
+
+  /* Brand gradient */
+  --brand-gradient: linear-gradient(180deg, #8b5cf6 0%, #6d4aff 100%);
+
+  /* Motion tokens */
+  --ease-linear: cubic-bezier(0.2, 0, 0, 1);
+  --ease-expressive: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Animations */
+  --animate-shimmer: shimmer 1200ms linear infinite;
+  --animate-pulse-dot: pulse-dot 1.6s ease-in-out infinite;
+  --animate-marquee: marquee 36s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.82);
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-bg-0);
+    color: var(--color-text-0);
+    color-scheme: dark;
+  }
+
+  .light {
+    background-color: var(--color-bg-0-light);
+    color: var(--color-text-0-light);
+    color-scheme: light;
+  }
+
+  * {
+    border-color: var(--color-line-1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg-0);
+    color: var(--color-text-0);
+    font-feature-settings: "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgb(124 92 255 / 0.32);
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 1px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-bg-3);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-line-2);
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    border: none;
+  }
+
+  .text-tabular {
+    font-feature-settings: "tnum";
+  }
+
+  .bg-brand-gradient {
+    background-image: var(--brand-gradient);
+  }
+
+  .bg-brand-glow {
+    background:
+      radial-gradient(60% 140% at 50% 0%, rgb(124 92 255 / 0.22), transparent 70%),
+      var(--color-bg-0);
+  }
+
+  /* Grid backdrop used across marketing */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .code-scrollbar::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+
+/* Widget library styles are namespaced; nothing to do here. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
